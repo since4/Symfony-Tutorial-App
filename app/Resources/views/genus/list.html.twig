@@ -1,0 +1,36 @@
+{# print out db records of genuses 
+We printed genus.name... but name is a private property - 
+so we should not be able to access it directly. How is this working?  
+Twig noticed that name was private and called getName() instead. 
+Twig is smart enough to figure out how to access the data - 
+and this lets us keep the template simple.
+#}
+
+
+{% extends 'base.html.twig' %}
+{% block body %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Genus</th>
+                <th># of species</th>
+                <th>Last updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for genus in genuses %}
+                {# {{ dump(genus) }}  #}
+                <tr>
+                    <td>
+                        <!--Link to: @Route("/genus/{genusName}", name="genus_show")-->
+                        <a href="{{ path('genus_show', {'genusName': genus.name}) }}"> 
+                            {{ genus.name }}
+                        </a>
+                    </td>
+                    <td>{{ genus.speciesCount }}</td>
+                    <td>{{ genus.updatedAt|date('Y-m-d') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

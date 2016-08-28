@@ -1,0 +1,223 @@
+{#
+/**
+ *Twig Header Comment
+ */
+#}
+
+{# to load an html base layout template #}
+{% extends 'base.html.twig' %}
+
+{# override base template block #}
+{% block title %}Genus {{ genus.name }}{% endblock %}
+
+{# first version
+{% block body %}
+<h1>The Genus {{ name }}</h1>
+<ul>
+    {% for note in notes %}
+        <li>{{ note }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
+#}
+
+
+{# second version
+{% block body %}
+    <h2 class="genus-name">{{ name }}</h2>
+    <div class="sea-creature-container">
+        <div class="genus-photo"></div>
+        <div class="genus-details">
+            <dl class="genus-details-list">
+                <dt>Subfamily:</dt>
+                <dd>Octopodinae</dd>
+                <dt>Known Species:</dt>
+                <dd>289</dd>
+                <dt>Fun Fact:</dt>
+                <dd>Octopuses can change the color of their body in just three-tenths of a second!</dd>
+            </dl>
+        </div>
+    </div>
+    <div class="notes-container">
+        <h2 class="notes-header">Notes</h2>
+        <div><i class="fa fa-plus plus-btn"></i></div>
+    </div>
+    <section id="cd-timeline">
+        {% for note in notes %}
+            <div class="cd-timeline-block">
+                <div class="cd-timeline-img">
+                                <img src="{{ asset('images/leanna.jpeg') }}" class="img-circle" alt="Leanna!">
+                        </div>
+                <div class="cd-timeline-content">
+                                <h2><a href="#">AquaPelham</a></h2>
+                                <p>{{ note }}</p>
+                                <span class="cd-date">Dec. 10, 2015</span>
+                        </div>
+            </div>
+        {% endfor %}
+    </section>
+{% endblock %}
+#}
+
+{# third version
+{% block body %}
+    <h2 class="genus-name">{{ name }}</h2>
+    <a href="{{ path('genus_show_notes', {'genusName': name}) }}">Json Notes</a>
+    <div class="sea-creature-container">
+        <div class="genus-photo"></div>
+        <div class="genus-details">
+            <dl class="genus-details-list">
+                <dt>Subfamily:</dt>
+                <dd>Octopodinae</dd>
+                <dt>Known Species:</dt>
+                <dd>289</dd>
+                <dt>Fun Fact:</dt>
+                <dd>Octopuses can change the color of their body in just 
+                                three-tenths of a second!</dd>
+            </dl>
+        </div>
+    </div>
+    <div class="notes-container">
+        <h2 class="notes-header">Notes</h2>
+        <div><i class="fa fa-plus plus-btn"></i></div>
+    </div>
+    <section id="cd-timeline"></section>
+{% endblock %}
+#}
+
+{# fourth version
+{% block body %}
+    <h2 class="genus-name">{{ name }}</h2>
+    <div class="sea-creature-container">
+        <div class="genus-photo"></div>
+        <div class="genus-details">
+            <dl class="genus-details-list">
+                <dt>Subfamily:</dt>
+                <dd>Octopodinae</dd>
+                <dt>Known Species:</dt>
+                <dd>289</dd>
+                <dt>Fun Fact:</dt>
+                <dd>Octopuses can change the color of their body in just 
+                                three-tenths of a second!</dd>
+            </dl>
+        </div>
+    </div>
+    <div id="js-notes-wrapper"></div>
+{% endblock %}
+{% block javascripts %}
+        {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+        <script type="text/babel" src="{{ asset('js/notes.react.js') }}"></script>
+    <script type="text/babel">
+        ReactDOM.render(
+          <NoteSection />,
+          document.getElementById('js-notes-wrapper')
+        );
+    </script>
+{% endblock %}
+#}
+
+{# fifth version
+{% block body %}		
+    <h2 class="genus-name">{{ name }}</h2>
+    <div class="sea-creature-container">
+        <div class="genus-photo"></div>
+        <div class="genus-details">
+            <dl class="genus-details-list">
+                <dt>Subfamily:</dt>
+                <dd>Octopodinae</dd>
+                <dt>Known Species:</dt>
+                <dd>289</dd>
+                <dt>Fun Fact:</dt>
+                <dd>Octopuses can change the color of their body in just three-tenths of a second!</dd>
+            </dl>
+        </div>
+    </div>
+        <div id="js-notes-wrapper"></div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+        <script type="text/babel" src="{{ asset('js/notes.react.js') }}"></script>
+        <script type="text/babel">
+        var notesUrl = '{{ path('genus_show_notes', {'genusName': name}) }}';
+                ReactDOM.render(
+          <NoteSection url={notesUrl} />,
+          document.getElementById('js-notes-wrapper')
+        );
+    </script>
+{% endblock %}
+#}
+
+
+{% block body %}	
+    {#added to file: base.html.twig, 
+            div class: main-content
+            #}
+    <h2 class="genus-name">{{ genus.name }}</h2>
+    <div class="sea-creature-container">
+
+        {#photo path is in css file#}
+        <div class="genus-photo"></div>
+        
+        <div class="genus-details">
+            <dl class="genus-details-list">
+                <dt>Subfamily:</dt>
+                <dd>{{ genus.subFamily }}</dd>
+                <dt>Known Species:</dt>
+                <dd>{{ genus.speciesCount|number_format }}</dd>
+                <dt>Fun Fact:</dt>
+                {# One of the best features of Twig is that it automatically 
+                escapes any HTML that you render. That gives you free security 
+                from XSS attacks. And for those few times when you do want to 
+                print HTML, just add the |raw filter:
+                #}
+                <dd>{{ genus.funFact |raw }}</dd>
+            </dl>
+        </div>
+    </div>
+
+    {#dynamic part:
+            controller: getNotesAction
+            view caller: ReactDOM.render in script below 
+            #}
+    <div id="js-notes-wrapper"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {# parent makes the child block append to (and not replace) the parent block #}
+    {{ parent() }}
+
+    {# ReactJS; needed to make an AJAX request to the notes API endpoint
+            at  @Route("/genus/{name}/notes", name="genus_show_notes")
+            #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+
+    {# own js in web folder (the publicly accessable document root) #}
+    <script type="text/babel" src="{{ asset('js/notes.react.js') }}"></script>
+
+    {# to replace the hardcoded url in notes.react.js line 15 #}
+    <script type="text/babel">
+
+        {#the url leads to the json data structure from GenusController#}
+        var notesUrl = '{{ path('genus_show_notes', {'name': genus.name}) }}';
+
+        {# renders 
+                what: component NoteSection (with parameter url) 
+                from notes.react.js,
+                (That is the way to hand data (notesUrl) 
+                to a component’s props (this.porps.url))
+                where: div with id=js-notes-wrapper above
+                #}
+        ReactDOM.render(
+        <NoteSection url={notesUrl} />,
+        document.getElementById('js-notes-wrapper')
+        );
+    </script>
+{% endblock %}

@@ -1,0 +1,33 @@
+_wdt:
+    resource: "@WebProfilerBundle/Resources/config/routing/wdt.xml"
+    prefix:   /_wdt
+
+#- $php bin/console debug:router shows all routes
+#- the entry below means:
+#   _homepage is the name. 
+#   http://localhost:8000/ is the path
+#   in src/AppBundle/Controller 
+#   is a controller called MainController
+#   with method homepageAction()
+#- if the controller described here has an additional annotation:
+#   @Route("/main/" , name="app_main_homepage_")
+#   then it has two routes to be called ("/" and "/main/")
+#- if in AppBundle/Controller there is another controller 
+#   with same route and name: @Route("/", name="_homepage")
+#   this entry here will be overridden and the other page called!
+
+_homepage:
+    path: /
+    defaults:
+        _controller: AppBundle:Main:homepage
+
+_profiler:
+    resource: "@WebProfilerBundle/Resources/config/routing/profiler.xml"
+    prefix:   /_profiler
+
+_errors:
+    resource: "@TwigBundle/Resources/config/routing/errors.xml"
+    prefix:   /_error
+
+_main:
+    resource: routing.yml

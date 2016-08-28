@@ -1,0 +1,17 @@
+#This file is loaded in all environments
+#- in dev indirectly via routing_dev.yml
+#   app/config/config.yml shows
+#      framework:
+#          router:
+#              resource: "%kernel.root_dir%/config/routing_dev.yml"
+#- in prod directly
+#   app/config/config_dev.yml shows
+#      framework:
+#          router:
+#              resource: "%kernel.root_dir%/config/routing.yml"
+
+#But you can also create routes right inside YAML - 
+#a lot of people actually prefer this over annotations. 
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
