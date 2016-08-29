@@ -175,8 +175,11 @@
                 escapes any HTML that you render. That gives you free security 
                 from XSS attacks. And for those few times when you do want to 
                 print HTML, just add the |raw filter:
+                (genus.funFact |raw) removed raw in the newer version
                 #}
-                <dd>{{ genus.funFact |raw }}</dd>
+                <dd>{{ genus.funFact }}</dd>
+                <dt>Recent Notes</dt>
+                <dd>{{ recentNoteCount }}</dd>
             </dl>
         </div>
     </div>

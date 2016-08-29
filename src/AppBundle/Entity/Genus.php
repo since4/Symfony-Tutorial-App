@@ -51,6 +51,33 @@ class Genus
      */
     private $funFact;
     
+    /*The inverse side of the relationship:
+     * One to Many relationship of genus to genus_notes
+     * mappedBy="genus" is the property in GenusNote 
+     * But don't get confused: 
+     * there's still only one relation in the database: 
+     * but now there are two ways to access the data on it: 
+     * $genusNote->getGenus() and now $genus->getNotes()
+     * 
+     * Notice I did not add a setNotes() method to Genus. 
+     * That's because you cannot set data on the inverse side: 
+     * you can only set it on the owning side. 
+     * In other words, $genusNote->setGenus() will work, 
+     * but $genus->setNotes() would not work:    */ 
+    /**
+     * @ORM\OneToMany(targetEntity="GenusNote", mappedBy="genus")
+     * @ORM\OrderBy({"createdAt" = "DESC"})
+     */
+    private $notes;
+    
+    /*__construct() property is invoked with: new Genus() 
+     * in superseded method newAction() OR the now used LoadFixtures.php/
+     */
+    public function __construct()
+    {
+        /*initialize the notes property to a new ArrayCollection*/
+        $this->notes = new ArrayCollection();
+    }
     
     function getName() {
         return $this->name;
@@ -93,6 +120,14 @@ class Genus
     {
         $this->isPublished = $isPublished;
     }
-
+    
+    /*annotation not necessary*/
+    /**
+     * @return ArrayCollection|GenusNote[]
+    */
+    public function getNotes()
+    {
+        return $this->notes;
+    }
 
 }

@@ -1,3 +1,7 @@
+#Path to the entities Genus and GenusNote:
+#LoadFixtures.php, Fixtures::Load will invoke 
+#new Genus() and new GenusNote() and store them
+#into the db
 AppBundle\Entity\Genus:
     genus_{1..10}:
         #genus() is a function in src/.../DataFixtures/ORM/LoadFixtures.php

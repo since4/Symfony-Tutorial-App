@@ -81,13 +81,18 @@ class GenusController extends Controller {
         /*without die: the normal page is shown in the Browser
          *the dump is in the web debug toolbar either
          *via icon on right side or via Debug menu*/
-        dump($em->getRepository('AppBundle:Genus'));
-               
+        /* in prod dump generates a 500 internal server error*/
+        //dump($em->getRepository('AppBundle:Genus')); 
+              
+        
         //$genuses = $em->getRepository('AppBundle\Entity\Genus')->findAll();
         //$genuses = $em->getRepository('AppBundle:Genus')->findAll();
         
+        //$genuses = $em->getRepository('AppBundle:Genus')
+        //        ->findAllPublishedOrderedBySize();
+        
         $genuses = $em->getRepository('AppBundle:Genus')
-                ->findAllPublishedOrderedBySize();
+        ->findAllPublishedOrderedByRecentlyActive();
                
         //dump($genuses);die;
         return $this->render('genus/list.html.twig', [
@@ -128,6 +133,7 @@ class GenusController extends Controller {
           ->transform($funFact); */       
         
         $em = $this->getDoctrine()->getManager();
+        
         $genus = $em->getRepository('AppBundle:Genus')
             ->findOneBy(['name' => $genusName]);
         
@@ -158,8 +164,46 @@ class GenusController extends Controller {
         ));
         */
         
+        /*
         return $this->render('genus/show.html.twig', array(
             'genus' => $genus
+        ));
+        */
+        
+        /*getNotes() returns an ArrayCollection object 
+         * and it has some tricks on it - like a method for filtering! 
+         * Chain a call to the filter() method 
+         * and pass this an anonymous function with a GenusNote argument. 
+         * The ArrayCollection will call this function for each item. 
+         * If we return true, it stays. If we return false, it disappears.
+         * Don't Abuse ArrayCollection 
+         * Do you see any downsides to this? There's one big one: 
+         * this queries for all of the notes, even though we don't need them all.
+         * If you may have many notes: don't do this - 
+         * you will feel the performance impact of loading up hundreds 
+         * of extra objects.
+         * Instead make a custom query that only returns 
+         * the GenusNote objects we need
+         */
+        //$recentNotes = $genus->getNotes()
+        //    ->filter(function(GenusNote $note) {
+        //        return $note->getCreatedAt() > new \DateTime('-3 months');
+        //    });
+        
+        
+        /*Now, instead of fetching all the notes just to count some of them, 
+         * we're only querying for the ones we need. 
+         * And, Doctrine loves returning objects, 
+         * but you could make this even faster by returning only the count 
+         * from the query, instead of the objects.
+         * We cover that in our Going Pro with Doctrine Queries.
+         */
+        $recentNotes = $em->getRepository('AppBundle:GenusNote')
+             ->findAllRecentNotesForGenus($genus);
+            
+        return $this->render('genus/show.html.twig', array(
+            'genus' => $genus,
+            'recentNoteCount' => count($recentNotes)
         ));
         
     }
@@ -187,8 +231,15 @@ class GenusController extends Controller {
          * this is the profiler for that AJAX call, and in the Debug panel... 
          * there's the dump.
          */
-        dump($genus);
+        /* in prod dump generates a 500 internal server error*/
+        //dump($genus);
         
+        //foreach ($genus->getNotes() as $note) {
+        //    dump($note);
+        //}
+        
+        
+        /* old version
         $notes = [
             ['id' => 1, 'username' => 'AquaPelham',
                 'avatarUri' => '/images/leanna.jpeg',
@@ -201,10 +252,30 @@ class GenusController extends Controller {
             ['id' => 3, 'username' => 'AquaPelham',
                 'avatarUri' => '/images/leanna.jpeg',
                 'note' => 'Inked!', 'date' => 'Aug. 20, 2015'],
-        ];
+        ];*/
+        
+        
+        /*PHP Associative Arrays (dictionaries, hash tables)
+         * Associative arrays are arrays that use named keys 
+         * that you assign to them. (key=>value pairs)*/
+        $notes = [];       
+        foreach ($genus->getNotes() as $note) {
+            $notes[] = [
+                'id' => $note->getId(),
+                'username' => $note->getUsername(),
+                'avatarUri' => '/images/'.$note->getUserAvatarFilename(),
+                'note' => $note->getNote(),
+                'date' => $note->getCreatedAt()->format('M d, Y')
+            ];
+        }
+              
         $data = [
             'notes' => $notes
         ];
+        
+        /* in prod dump generates a 500 internal server error*/
+        //dump($data);
+        
         /* json endpoint API
           the data-structure: $data is written to
           the url of this router,
