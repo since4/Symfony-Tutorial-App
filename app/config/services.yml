@@ -7,3 +7,45 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+
+#MarkdownTransformer class
+# To add a new service to the container, 
+# you basically need to teach the container 
+# how to instantiate your object.
+# 1. Give your new service a nickname: 
+#    This can be anything: we'll use it later to fetch the service
+#    How about: app.markdown_transformer
+# 2. Our own new service class
+# 3. The arguments to pass to the constructor. 
+#    The @ is special: it says:
+#    Don't pass the string markdown.parser, 
+#    pass the service markdown.parser
+# -> A new service has been born. Go look for it:
+#    - php bin/console debug:container markdown
+# This configuration causes Symfony to write 
+# plain PHP code that creates our service objects in:
+#    var/cache/dev/appDevDebugProjectContainer.php
+# Ultimately, when we ask for the 
+#    app.markdown_transformer service, 
+#    the protected function getApp_MarkdownTransformerService() 
+#    method is called in:
+#    var/cache/dev/appDevDebugProjectContainer.php
+    app.markdown_transformer:
+        class: AppBundle\Service\MarkdownTransformer
+        arguments: ['@markdown.parser', '@doctrine_cache.providers.my_markdown_cache']
+        
+# Symfony dependency injection tags:
+# Tags are the way to hook your services into different parts of the core system. 
+# When Symfony creates the twig service, it looks for all services 
+# in the container that are tagged with twig.extension. 
+# It then configures these as extensions on twig.
+# With autowire: true, Symfony reads the type-hints for each 
+# constructor argument and tries to automatically find the correct 
+# service to pass to you
+#
+    app.markdown_extension:
+        class: AppBundle\Twig\MarkdownExtension
+        tags:
+            - { name: twig.extension }
+        #arguments: ['@app.markdown_transformer']
+        autowire: true

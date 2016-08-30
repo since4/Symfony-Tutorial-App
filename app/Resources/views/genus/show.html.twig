@@ -175,9 +175,18 @@
                 escapes any HTML that you render. That gives you free security 
                 from XSS attacks. And for those few times when you do want to 
                 print HTML, just add the |raw filter:
-                (genus.funFact |raw) removed raw in the newer version
+                (genus.funFact |raw) replaced raw in the newer version.
+                The KnpMarkdownBundle comes with a filter called markdown 
+                it does not use our app.markdown_transformer. 
+                And this means that it's not using our caching system. 
+                Instead, let's create our own Twig filter
+                markdownify
+                It's defined in a new directory and class:
+                src/AppBundle/Twig/MardownExtension.php
+                The new service has to be configured in:
+                services.yml
                 #}
-                <dd>{{ genus.funFact }}</dd>
+                <dd>{{ genus.funFact | markdownify }}</dd>
                 <dt>Recent Notes</dt>
                 <dd>{{ recentNoteCount }}</dd>
             </dl>

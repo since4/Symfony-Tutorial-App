@@ -92,7 +92,7 @@ class Genus
     }
 
     function getFunFact() {
-        return $this->funFact;
+        return '**TEST** ' .$this->funFact;
     }
     
     function setName($name) {

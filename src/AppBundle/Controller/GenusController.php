@@ -19,6 +19,9 @@ use AppBundle\Entity\Genus;
 /*to use GenusNote.php model and contact db*/
 use AppBundle\Entity\GenusNote;
 
+/*my own services*/
+use AppBundle\Service\MarkdownTransformer;
+
 class GenusController extends Controller {
     /*NB: put your most generic-matching routes near the bottom!*/
     
@@ -141,7 +144,8 @@ class GenusController extends Controller {
             throw $this->createNotFoundException('genus not found');
         }
         
-        // todo - add the caching back later      
+        // todo - add the caching back later 
+        // now implemented in MarkdownTransformer.php     
 //        /*to use the cache for markdown:
 //           calculate md5 hash key and check in cache
 //           if it exists fetch it 
@@ -156,6 +160,25 @@ class GenusController extends Controller {
 //                    ->transform($funFact);
 //            $cache->save($key, $funFact);
 //        }
+        
+        /*MarkdownTransformer does not live in the container.
+         * We need to instantiate it manually: 
+         * we can't just say something like 
+         * $this->get('app.markdown_transformer') 
+         * and expect the container to create it for us.
+         * Time to change that... Open up app/config/services.yml
+         */
+        //$markdownParser = new MarkdownTransformer(
+        //        $this->get('markdown.parser')
+        //);
+        
+        /*After configuration in services.yml our own service
+            is available from the container with get()
+            all necessary objects for the constructor are
+            passed automatically according to instructions in
+            services.yml*/
+        $markdownParser = $this->get('app.markdown_transformer');
+        $funFact = $markdownParser->parse($genus->getFunFact());
         
         /*
         return $this->render('genus/show.html.twig', array(
@@ -203,6 +226,7 @@ class GenusController extends Controller {
             
         return $this->render('genus/show.html.twig', array(
             'genus' => $genus,
+            'funFact' => $funFact,
             'recentNoteCount' => count($recentNotes)
         ));
         
