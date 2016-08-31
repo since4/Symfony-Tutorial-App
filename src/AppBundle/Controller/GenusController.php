@@ -28,7 +28,7 @@ class GenusController extends Controller {
     
     /*add a new genus: this method is superseded by LoadFixtures.php*/
     /**
-     * @Route("/genus/new", name="genus_new")
+     * @Route("/genus/new_old", name="genus_new")
      */
     public function newAction()
     {

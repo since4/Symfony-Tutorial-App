@@ -4,6 +4,9 @@ namespace AppBundle\Entity;
 /*used to contact db*/
 use Doctrine\ORM\Mapping as ORM;
 
+use AppBundle\Entity\SubFamily;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 /*let Doctrine know that:
  * it should use our own repository class (GenusRepository.php)
@@ -15,11 +18,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 class Genus
 {
-    
-    /**
-     * @ORM\Column(type="boolean")
-     */   
-    private $isPublished = true;
     
     /*let Doctrine know about column id, 
      * it basically says that id is the primary key*/
@@ -36,8 +34,15 @@ class Genus
      */
     private $name;
     
+    /*old
+     * ORM\Column(type="string")
+     */
+    //private $subFamily;
+    
+    /*many Genus one SubFamily*/
     /**
-     * @ORM\Column(type="string")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SubFamily")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $subFamily;
     
@@ -50,6 +55,17 @@ class Genus
      * @ORM\Column(type="string", nullable=true)
      */
     private $funFact;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isPublished = true;
+      
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $firstDiscoveredAt;
+
     
     /*The inverse side of the relationship:
      * One to Many relationship of genus to genus_notes
@@ -79,46 +95,63 @@ class Genus
         $this->notes = new ArrayCollection();
     }
     
-    function getName() {
-        return $this->name;
-    }
-    
-    function getSubFamily() {
-        return $this->subFamily;
-    }
-
-    function getSpeciesCount() {
-        return $this->speciesCount;
-    }
-
-    function getFunFact() {
-        return '**TEST** ' .$this->funFact;
-    }
-    
-    function setName($name) {
-        $this->name = $name;
-    }
-
-    function setSubFamily($subFamily) {
-        $this->subFamily = $subFamily;
-    }
-
-    function setSpeciesCount($speciesCount) {
-        $this->speciesCount = $speciesCount;
-    }
-
-    function setFunFact($funFact) {
-        $this->funFact = $funFact;
-    }
-
+    /**/
     public function getUpdatedAt()
     {
         return new \DateTime('-'.rand(0, 100).' days');
     }
     
+    function getId() {
+        return $this->id;
+    }
+    
+    public function getName() {
+        return $this->name;
+    }
+    
+    public function setName($name) {
+        $this->name = $name;
+    }
+    
+    public function getSubFamily() {
+        return $this->subFamily;
+    }
+    
+    public function setSubFamily(SubFamily $subFamily) {
+        $this->subFamily = $subFamily;
+    }
+
+    public function getSpeciesCount() {
+        return $this->speciesCount;
+    }
+    
+    public function setSpeciesCount($speciesCount) {
+        $this->speciesCount = $speciesCount;
+    }
+
+    public function getFunFact() {
+        return '**TEST** ' .$this->funFact;
+    }
+    
+    public function setFunFact($funFact) {
+        $this->funFact = $funFact;
+    }
+
+    public function getIsPublished() {
+        return $this->isPublished;
+    }
+
     public function setIsPublished($isPublished)
     {
         $this->isPublished = $isPublished;
+    }
+    
+    public function getFirstDiscoveredAt() {
+        return $this->firstDiscoveredAt;
+    }
+
+    public function setFirstDiscoveredAt(\DateTime $firstDiscoveredAt = null) {
+        $this->firstDiscoveredAt = $firstDiscoveredAt;
     }
     
     /*annotation not necessary*/
@@ -128,6 +161,6 @@ class Genus
     public function getNotes()
     {
         return $this->notes;
-    }
+    } 
 
 }
