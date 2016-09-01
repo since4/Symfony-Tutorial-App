@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /*used libraries to customize form fields*/
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 /*used to sort subfamilies in dropdown list*/
 use AppBundle\Entity\SubFamily;
@@ -76,9 +77,12 @@ class GenusFormType extends AbstractType
                 // used to render a select box, check boxes or radios
                 //'multiple' => true,
                 //'expanded' => true,
-            ))    
+            )) 
+                
             ->add('speciesCount')
-            ->add('funFact')                
+                    
+            ->add('funFact') 
+                    
             /*Default for type boolean is CheckboxType::class. 
              * But instead, I'd rather have a select drop-down 
              * with "yes" and "no" options which is ChoiceType::class.*/    
@@ -88,12 +92,26 @@ class GenusFormType extends AbstractType
                     'No' => false,
                 ]
             ])
-            /*Default for a date is DateType::class*/    
-            ->add('firstDiscoveredAt')
+                    
+            /*Default for a date is DateType::class
+             * with widget option: 
+             * the three select fields, which is lame 
+             * In new.html.twig template we have to add
+             * links to datepicker css and js.
+             * Some browsers have this functionality
+             * as a html5 built-in. (Not firefox)
+             * Therefore disable it with html5=>false 
+             */    
+            ->add('firstDiscoveredAt', DateType::class, [
+                'widget' => 'single_text',
+                'attr' => ['class' => 'js-datepicker'],
+                'html5' => false,
+            ])
         ;
     }
     
-    /*To get a brand-new Genus object that's just waiting to be saved. 
+    /*Only here the entity is mentioned:
+     * To get a brand-new Genus object that's just waiting to be saved. 
      * Thanks to the data_class option, the form creates a new Genus 
      * object behind the scenes. And then it sets the data on it.*/
     public function configureOptions(OptionsResolver $resolver)

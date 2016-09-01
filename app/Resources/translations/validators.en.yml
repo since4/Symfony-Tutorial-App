@@ -1,0 +1,8 @@
+## YAML Template.
+#System wide translations of messages with pattern:
+#old message : new message
+#if it doesn't work out, do:
+#php bin/console cache:clear
+
+#used in form validation
+"This value should not be blank.": Hi! Please enter *something* for this field :)

@@ -1,0 +1,94 @@
+{# form rendering code for:
+new.html.twig and edit.html.twig
+If there were any customizations 
+you needed to make between 
+new and edit, 
+I would pass a variable in through 
+the second argument of the include function 
+and use that to control the differences. 
+#}
+
+{#Form HTML
+To render a genusForm variable we use
+functions to create the HTML form tag:
+First, we need an opening form tag. 
+Render that with form_start(genusForm)
+In between, render all three form fields 
+at once with form_widget(genusForm)
+And finally, we need a button! We can do that by hand: 
+<button type="submit">, give it a few 
+Bootstrap classes and call it "Save".
+(You can also add buttons as fields to your form.)
+Last we need a closing form tag, 
+add form_end(genusForm)
+Form Theme CSS:
+We're using Bootstrap, Symfony can automatically 
+render the fields using Bootstrap-friendly markup.
+Yep, that's built-in. 
+Open app/config/config.yml. 
+Under twig, add form_themes and then below that - 
+bootstrap_3_layout.html.twig
+Web Debug Toolbar:
+Use the Form Profiler.  
+It's packed with stuff that's going to make your form life better.
+CSRF Protection:
+A CSRF token that's automatically added to the form.
+Cross-site request forgery, also known as one-click attack 
+or session riding and abbreviated as CSRF 
+(sometimes pronounced sea-surf[1]) or XSRF, 
+is a type of malicious exploit of a website 
+where unauthorized commands are transmitted 
+from a user that the website trusts.
+Unlike cross-site scripting (XSS), 
+which exploits the trust a user has for a particular site, 
+CSRF exploits the trust that a site has in a user's browser.
+#}
+{{ form_start(genusForm) }}
+
+    {#Normally we do not use form_widget:
+    First, we can't change the order of the fields. 
+    And second, we won't be able to control the labels 
+    or anything else that we're going to talk about.
+    Cheetsheet for Twig form functions:
+    http://symfony.com/doc/current/reference/forms/twig_reference.html
+    http://symfony.com/doc/current/reference/forms/twig_reference.html#form-variables-reference
+    If you ever need more control, 
+    you can render those individually with form_widget, 
+    form_label and form_errors. 
+    Use these instead of form_row, only when you need to.
+    Most of these functions - including form_row - 
+    have a second argument called "variables"
+    These "variables" are the most powerful part of form rendering. 
+    By passing different values, 
+    you can override almost every part of how a field is rendered.
+    {{ form_widget(genusForm) }}
+    #}
+    {{ form_row(genusForm.name) }}
+    {{ form_row(genusForm.subFamily) }}
+    {{ form_row(genusForm.speciesCount, {
+        'label': 'Number of Species'
+    }) }}
+    {{ form_row(genusForm.funFact) }}
+    {{ form_row(genusForm.isPublished) }}
+    {{ form_row(genusForm.firstDiscoveredAt) }}
+
+    {#formnovalidate:
+    When Symfony renders the field, 
+    it's adding a required="required" attribute, 
+    and this activates HTML5 validation.
+    Even if we like this HTML5 client-side validation, 
+    we still need to add true server-side validation. 
+    Otherwise, nasty users can go crazy on our site.
+    So here's what I do: I disable HTML5 validation 
+    and rely purely on server-side validation. 
+    If you do want some fancy client-side validation, 
+    I recommend adding it with a JavaScript library. 
+    These give you more features 
+    and control than HTML5 validation.
+    There's even a bundle:
+    https://github.com/formapro/JsFormValidatorBundle
+    (but: js can be disabled in browsers )
+    #}                                      
+    <button type="submit" class="btn btn-primary" formnovalidate>Save</button>
+    
+{{ form_end(genusForm) }}

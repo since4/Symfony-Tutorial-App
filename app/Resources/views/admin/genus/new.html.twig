@@ -1,34 +1,12 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/genus/_formLayout.html.twig' %}
+
 {% block body %}
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
                 <h1>New Genus</h1>
-                {#Form HTML
-                To render a genusForm variable we use
-                functions to create the HTML form tag:
-                First, we need an opening form tag. 
-                Render that with form_start(genusForm)
-                In between, render all three form fields 
-                at once with form_widget(genusForm)
-                And finally, we need a button! We can do that by hand: 
-                <button type="submit">, give it a few 
-                Bootstrap classes and call it "Save".
-                (You can also add buttons as fields to your form.)
-                Last we need a closing form tag, 
-                add form_end(genusForm)
-                Form Theme CSS:
-                We're using Bootstrap, Symfony can automatically 
-                render the fields using Bootstrap-friendly markup.
-                Yep, that's built-in. 
-                Open app/config/config.yml. 
-                Under twig, add form_themes and then below that - 
-                bootstrap_3_layout.html.twig
-                #}
-                {{ form_start(genusForm) }}
-                    {{ form_widget(genusForm) }}
-                    <button type="submit" class="btn btn-primary">Save</button>
-                {{ form_end(genusForm) }}
+                
+                {{ include('admin/genus/_form.html.twig') }}               
             </div>
         </div>
     </div>

@@ -4,8 +4,18 @@ namespace AppBundle\Entity;
 /*used to contact db*/
 use Doctrine\ORM\Mapping as ORM;
 
+/*used sub class with OneToMany relation*/
 use AppBundle\Entity\SubFamily;
+
+/*used to store the notes*/
 use Doctrine\Common\Collections\ArrayCollection;
+
+/*Next, we'll add validation rules - 
+ * called constraints - above each property.
+ * You don't apply validation to your form. 
+ * Instead, you add validation to the class 
+ * that is bound to your form*/
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /*let Doctrine know that:
@@ -31,6 +41,7 @@ class Genus
     /*let Doctrine know about column name*/
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
      */
     private $name;
     
@@ -43,11 +54,14 @@ class Genus
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SubFamily")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank()
      */
     private $subFamily;
     
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank()
+     * @Assert\Range(min=0, minMessage="Negative species? Come on...!")
      */
     private $speciesCount;
     
@@ -63,6 +77,7 @@ class Genus
       
     /**
      * @ORM\Column(type="date")
+     * @Assert\NotBlank()
      */
     private $firstDiscoveredAt;
 
@@ -130,7 +145,8 @@ class Genus
     }
 
     public function getFunFact() {
-        return '**TEST** ' .$this->funFact;
+        //return '**TEST** ' .$this->funFact;
+        return $this->funFact;
     }
     
     public function setFunFact($funFact) {

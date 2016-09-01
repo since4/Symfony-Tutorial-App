@@ -1,0 +1,31 @@
+{# form rendering layout code for:
+new.html.twig and edit.html.twig
+If there were any customizations 
+you needed to make between 
+new and edit, 
+I would pass a variable in through 
+the second argument of the include function 
+and use that to control the differences. 
+#}
+{% extends 'base.html.twig' %}
+
+{# append stylesheet and js block for datepicker widget
+   its probably better to download and save the two files
+   locally 
+#}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+        jQuery(document).ready(function() {
+            $('.js-datepicker').datepicker({
+                format: 'yyyy-mm-dd'
+            });
+        });
+    </script>
+{% endblock %}
