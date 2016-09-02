@@ -1,20 +1,64 @@
 # To get started with security, check out the documentation:
 # http://symfony.com/doc/current/book/security.html
 security:
-
+    
+    encoders:
+        AppBundle\Entity\User: bcrypt
+    
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
-        in_memory:
-            memory: ~
+        #To remove error: There is no user provider for user AppBundle\Entity\User
+        #Add following two lines and delete in_memory stuff
+        our_users:
+            entity: { class: AppBundle\Entity\User, property: email }
+        #in_memory:
+        #    memory: ~
 
     firewalls:
-        # disables authentication for assets and the profiler, adapt it according to your needs
+        #Disables authentication for assets and the profiler, 
+        # adapt it according to your needs
+        #Your firewall is your authentication system: 
+        # it's like the security desk you pass when going into a building. 
+        # Now, there's always only one firewall that's active on any request. 
+        # You see, if you go to a URL that starts with: 
+        # /_profiler, /_wdt or /css, 
+        # you hit the dev firewall only.
+        # This basically turns security off: it's like sneaking through 
+        # the side door of a building that has no security desk. 
+        # This is here to prevent us from getting over-excited with security 
+        # and accidentally securing our debugging tools.
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-
+        
+        #In reality, every real request will activate the main firewall.
+        # Because it has no pattern key, it matches all URLs.
+        # Our job is to activate different ways 
+        # to authenticate under this one firewall. 
+        # We might allow the user to authenticate via 
+        # a form login, HTTP basic, an API token, Facebook login 
+        # or all of these. 
+        #We won't use form_login: 
+        # You can add a key called form_login under the firewall. 
+        # Then, everything just magically works.
+        # It's really cool because it's quick to set up! 
+        # But it's super magical and hard to extend and control.
+        #We use as system called GUARD:
+        # It is more work to setup, 
+        # but you'll have control over everything from day 1.
+        # The first step is always to create an authenticator class:
+        # LoginFormAuthenticator.php
         main:
-            anonymous: ~
+            anonymous: ~           
+            guard:
+                # activate the authenticator
+                authenticators:
+                    - app.security.login_form_authenticator
+            
+            #activate logout
+            logout:
+                path: /logout
+            
             # activate different ways to authenticate
 
             # http_basic: ~

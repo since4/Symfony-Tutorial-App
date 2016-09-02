@@ -2,9 +2,8 @@
 
 namespace AppBundle\Entity;
 
+/*used to contact db*/
 use Doctrine\ORM\Mapping as ORM;
-
-
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SubFamilyRepository")

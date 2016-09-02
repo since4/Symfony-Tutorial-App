@@ -2,8 +2,10 @@
 
 namespace AppBundle\Entity;
 
+/*used to contact db*/
 use Doctrine\ORM\Mapping as ORM;
 
+/*used to set genus property with setGenus()*/
 use AppBundle\Entity\Genus;
 
 /**

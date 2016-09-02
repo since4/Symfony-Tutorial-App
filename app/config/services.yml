@@ -49,3 +49,25 @@ services:
             - { name: twig.extension }
         #arguments: ['@app.markdown_transformer']
         autowire: true
+        
+# Register the authenticator as a service
+# We can autowire the arguments because 
+# we type-hinted all the constructor arguments.
+# Name: app.security.login_form_authenticator
+    app.security.login_form_authenticator:
+        class: AppBundle\Security\LoginFormAuthenticator
+        autowire: true
+        
+# Registering the Subscriber as a Service
+# To tell Doctrine about our event subscriber, 
+# we'll add a tag. 
+# This is something we talked about in our services course: 
+# it's a way to tell the system 
+# that your service should be used for some special purpose.
+# Before creating or updating any entities, 
+# Doctrine will call our listener
+    app.doctrine.hash_password_listener:
+        class: AppBundle\Doctrine\HashPasswordListener
+        autowire: true
+        tags:
+            - { name: doctrine.event_subscriber }
