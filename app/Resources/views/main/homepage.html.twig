@@ -9,6 +9,13 @@
 
 {# override base template block #}
 {% block body %}
-    <h1 class="page-header text-center">Welcome Aquanauts!</h1>
+    <h1 class="page-header text-center">
+        Welcome 
+        {#app variable is the one global variable you get in Symfony. 
+        And one of its super-powers is to give you the current User object 
+        if there is one, or null if the user isn't logged in. #}
+        {{ app.user ? app.user.email : 'Aquanauts' }}
+        !
+    </h1>
 {% endblock %}
 

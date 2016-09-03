@@ -10,11 +10,17 @@ use Symfony\Component\Security\Core\Role\Role;
 /*used for db access*/
 use Doctrine\ORM\Mapping as ORM;
 
+/*used for annotation rules for server side form field validation*/
+use Symfony\Component\Validator\Constraints as Assert;
+
+/*used to force unique entities*/
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="user")
- */
+ * @UniqueEntity(fields={"email"}, message="It looks like you already have an account!")
+*/
 class User implements UserInterface
 {
     /**
@@ -25,6 +31,8 @@ class User implements UserInterface
     private $id;
     
     /**
+     * @Assert\NotBlank()
+     * @Assert\Email()
      * @ORM\Column(type="string", unique=true)
      */
     private $email;
@@ -36,12 +44,24 @@ class User implements UserInterface
      */
     private $password;
     
+    /*we need this annotation to only work on the registration form.
+     * Registration is a made up string
+     * it is used in UserRegistrationForm.php
+     * for method: configureOptions()
+     */
     /**
      * A non-persisted field that's used to create the encoded password.
+     * @Assert\NotBlank(groups={"Registration"})
      *
      * @var string
      */
     private $plainPassword;
+    
+    /*roles for authorisation control*/
+    /**
+     * @ORM\Column(type="json_array")
+     */
+    private $roles = [];
     
     // needed by the security system
     public function getUsername()
@@ -51,7 +71,26 @@ class User implements UserInterface
     
     public function getRoles()
     {
-        return ['ROLE_USER'];
+        $roles = $this->roles;
+        
+        /*every user must have at least one role. 
+         * Otherwise, weird stuff happens.
+         * But it doesn't seem to be set in db.
+         */
+        // give everyone ROLE_USER!
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+        
+        /*old*/
+        //return ['ROLE_USER'];
+        
+        return $roles;
+    }
+    
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
     }
     
     public function getPassword()

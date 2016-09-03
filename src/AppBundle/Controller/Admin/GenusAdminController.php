@@ -1,15 +1,31 @@
 <?php
 namespace AppBundle\Controller\Admin;
 
+/*to use Genus.php model*/
 use AppBundle\Entity\Genus;
+
+/*to load the form GenusFormType.php*/
 use AppBundle\Form\GenusFormType;
+
+/*to parse annotations*/
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
+/*used for @security annotations */
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
+/*to extend Controller and use render() method*/
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+/*used for the http Request object which holds the session data*/
 use Symfony\Component\HttpFoundation\Request;
 
-/**/
+/*to lock down an entire controller
+ * put the @Security() line above the controller
+ * As soon as you do that, all of these endpoints are locked down.
+ */
 /**
  * @Route("/admin")
+ * @Security("is_granted('ROLE_MANAGE_GENUS')")
  */
 class GenusAdminController extends Controller
 {
@@ -19,6 +35,15 @@ class GenusAdminController extends Controller
      */
     public function indexAction()
     {
+        /*authorisation old
+         */
+        //if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+        //    throw $this->createAccessDeniedException('Access denied!');
+        //}
+        
+        /*authorisation*/
+        //$this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
         $genuses = $this->getDoctrine()
             ->getRepository('AppBundle:Genus')
             ->findAll();
@@ -98,7 +123,12 @@ class GenusAdminController extends Controller
              * Because then, you can set a flash message, 
              * redirect to any other page, and it'll always show up.
              */
-            $this->addFlash('success', 'Genus created!');
+            //$this->addFlash('success', 'Genus created!');
+            $this->addFlash(
+                'success',
+                sprintf('Genus created by you: %s!', 
+                        $this->getUser()->getEmail())
+            );
             
             /*Next, we always redirect after a successful form submit - 
              * ya know, to make sure that the user can't just refresh 

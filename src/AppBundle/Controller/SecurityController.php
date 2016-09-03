@@ -1,9 +1,13 @@
 <?php
 namespace AppBundle\Controller;
 
+/*to extend Controller and use render() method*/
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+/*to parse annotations*/
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
+/*to load the class LoginForm.php*/
 use AppBundle\Form\LoginForm;
 
 /*Every login looks about the same:
@@ -14,8 +18,8 @@ use AppBundle\Form\LoginForm;
  * Welcome to the strangest part of Symfony's security. 
  * We will build the login form here, 
  * but some other magic layer will actually handle the form submit. 
- * We'll build that layer next. 
- * But thanks to this handy security.authentication_utils service, 
+ * We'll build that layer next (LoginFormAuthenticator.php). 
+ * But thanks to the handy security.authentication_utils service, 
  * we can at least grab any authentication error 
  * that may have just happened in that magic layer 
  * as well as the last username that was typed in, 
@@ -32,8 +36,8 @@ class SecurityController extends Controller
         /*Behind the scenes, the authenticator 
          * communicates to your SecurityController 
          * by storing things in the session. 
-         * That's what the security.authentication_utils helps us with
-         * the login form is automatically setting 
+         * That's what the security.authentication_utils helps us with.
+         * The login form is automatically setting 
          * the authentication error to the session for us. 
          * But, it is not setting the last username on the session:
          * Fix it in LoginFormAuthenticator.php, getCredentials method.

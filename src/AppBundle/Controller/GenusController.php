@@ -6,7 +6,7 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
-/*to extend Controller and use render*/
+/*to extend Controller and use render() method*/
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /*to use Respose and JsonResponse*/
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 /*to use Genus.php model and contact db*/
 use AppBundle\Entity\Genus;
 
-/*to use GenusNote.php model and contact db*/
+/*to use GenusNote.php model when contacting db*/
 use AppBundle\Entity\GenusNote;
 
 /*my own services*/

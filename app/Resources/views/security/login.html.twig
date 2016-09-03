@@ -49,9 +49,11 @@ LoginForm.php
                     <input type="hidden" name="_target_path" value="/account" />
                 #}
                 <button type="submit" class="btn btn-success">Login <span class="fa fa-lock"></span></button>
+                &nbsp;
+                <a href="{{ path('user_register') }}">Registration</a>
+                
             {{ form_end(form) }}    
                 
-            
         </div>
     </div>
 </div>

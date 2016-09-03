@@ -1,7 +1,20 @@
 #Path to the entities Genus and GenusNote:
 #LoadFixtures.php, Fixtures::Load will invoke 
-#new Genus() and new GenusNote() and store them
-#into the db
+#new Genus() and new GenusNote() and so on
+#and store them into the db
+#
+#in mysql delete recods in tables with:
+#> delete from "tablename"
+#
+#after schema changes you have to drop tables:
+#> drop table "tablename"
+#
+#because of foreign key constraints (relationships of entities)
+#you must start to delete with the children (foreign key entities)
+#> delete from genus_notes, drop table genus_notes
+#> delete from genus, drop table genus
+#< delete from sub_family, drop table sub_family
+
 AppBundle\Entity\Genus:
     genus_{1..10}:
         #genus() is a function in src/.../DataFixtures/ORM/LoadFixtures.php
@@ -34,3 +47,4 @@ AppBundle\Entity\User:
         #so these will all be delivered to weaverryan@gmail.com
         email: rolly+<current()>@mymail.com
         plainPassword: x
+        roles: ['ROLE_ADMIN']

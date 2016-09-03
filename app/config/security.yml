@@ -1,7 +1,7 @@
 # To get started with security, check out the documentation:
 # http://symfony.com/doc/current/book/security.html
 security:
-    
+    #password encoder
     encoders:
         AppBundle\Entity\User: bcrypt
     
@@ -58,6 +58,24 @@ security:
             #activate logout
             logout:
                 path: /logout
+                       
+            #Impersonation
+            #The worst is when a user reports a bug in their account... 
+            #which would be really easy to verify and debug... 
+            #if only we could log and see what they're seeing.
+            #We need to be able switch to that user's account: 
+            #we need to impersonate them.
+            #On any URL, you can add 
+            #?_switch_user= 
+            #and then the username of whoever you want to log in as.
+            #We can't just let anybody do this impersonation trick. 
+            #Internally, this feature checks for a very specific role called 
+            #ROLE_ALLOWED_TO_SWITCH
+            #by adding 
+            #?_switch_user=_exit 
+            #to any URL. 
+            #That's it! We're back as our original user.
+            switch_user: ~
             
             # activate different ways to authenticate
 
@@ -66,3 +84,38 @@ security:
 
             # form_login: ~
             # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
+    
+    #There are 2 main ways to deny access, 
+    #and the simplest is right inside of security.yml. 
+    #It's called "access control".
+    #That path is a regular expression. 
+    #So, if anyone goes to a URL that starts with /admin, 
+    #the system will kick them out unless they have ROLE_USER
+    #The only rule about roles is that roles must start with ROLE_
+    #I do use access controls to lock down big sections, 
+    #but, mostly, I handle authorization inside my controllers.
+    #For a role ROLE_XYZ use either annotations:
+    # - @Security("is_granted('ROLE_XYZ')")
+    #Or this line inside Action()
+    # - $this->denyAccessUnlessGranted('ROLE_XYZ');
+    #to lock down an entire controller 
+    #put the @Security() line above the controller
+    access_control:
+        #- { path: ^/admin, roles: ROLE_USER }
+    
+    #role hierachy
+    #The strategy is this: first: 
+    #lock down different sections using role names 
+    #that describe what it's protecting
+    #- like ROLE_OCTOPUS_PHOTO_MANAGE. 
+    #Second, in security.yml, create group-based roles here
+    #- like ROLE_MARINE_BIOLOGIST or ROLE_MANAGEMENT - 
+    #and assign each the permissions they should have. 
+    #With this setup, you should be able 
+    #to give most users just one role in the database.
+    role_hierarchy:
+        #if anybody has ROLE_ADMIN, 
+        #automatically give them ROLE_MANAGE_GENUS (GenusAdminController.php)
+        #ROLE_ALLOWED_TO_SWITCH 
+        #is a special role which allows impersonation
+        ROLE_ADMIN: [ROLE_MANAGE_GENUS, ROLE_ALLOWED_TO_SWITCH]

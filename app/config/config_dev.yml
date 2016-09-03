@@ -13,7 +13,6 @@ framework:
 
 web_profiler:
     toolbar: true
-    
     # true means:
     # whenever the app is about to redirect us, 
     # Symfony will stop instead, 
